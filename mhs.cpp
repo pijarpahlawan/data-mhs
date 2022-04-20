@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 // class mahasiswa
 class Mahasiswa
@@ -44,8 +45,8 @@ public:
 
 void setdatas(int, int, std::string *, Mahasiswa *);
 void sortrank(Mahasiswa *, int);
-void getdatas(Mahasiswa *, int);
-void findmhs(Mahasiswa *obj, std::string nama, int it);
+void showfirstrank(Mahasiswa *);
+void findmhs(Mahasiswa *, const char *, int);
 
 // main program
 int main()
@@ -57,7 +58,6 @@ int main()
                             "Komputer Grafis", "Hardware/Software"};
 
     std::string nama = "\0";
-
     int numof_matkul = (sizeof(matkul) / sizeof(std::string));
     int numof_mhs = 0;
 
@@ -77,15 +77,15 @@ int main()
     // mengurutkan mahasiswa dari ipk terbesar
     sortrank(mahasiswa, numof_mhs);
 
-    // mengeluarkan data mahasiswa
-    std::cout << "DATA RANKING MAHASISWA\n " << std::endl;
-    getdatas(mahasiswa, numof_mhs);
+    // mengeluarkan mahasiswa ipk tertinggi
+    std::cout << "PERINGKAT 1\n " << std::endl;
+    showfirstrank(mahasiswa);
 
     // menemukan rangking mahasiswa
     std::cout << "Masukkan nama yang dicari: ";
     std::cin.ignore();
-    std::getline(std::cin, nama);
-    findmhs(mahasiswa, nama, numof_mhs);
+    getline(std::cin, nama);
+    findmhs(mahasiswa, nama.c_str(), numof_mhs);
 
     // bebaskan blok memori mahasiswa
     delete[] mahasiswa;
@@ -196,26 +196,23 @@ void sortrank(Mahasiswa *obj, int it)
     }
 }
 
-void getdatas(Mahasiswa *obj, int it)
+void showfirstrank(Mahasiswa *obj)
 {
-    for (int i = 0; i < it; i++)
-    {
-        std::cout << "RANKING-" << i + 1 << std::endl;
-        std::cout << "Nama : " << (obj + i)->getnama() << std::endl;
-        std::cout << "NIM  : " << (obj + i)->getnim() << std::endl;
-        std::cout << "IPK  : " << (obj + i)->getipk() << std::endl;
-        std::cout << std::endl;
-    }
+    std::cout << "Nama : " << (obj + 0)->getnama() << std::endl;
+    std::cout << "NIM  : " << (obj + 0)->getnim() << std::endl;
+    std::cout << "IPK  : " << (obj + 0)->getipk() << std::endl;
+    std::cout << std::endl;
 }
 
-void findmhs(Mahasiswa *obj, std::string nama, int it)
+void findmhs(Mahasiswa *obj, const char *target, int it)
 {
     bool finded = false;
     for (int i = 0; i < it; i++)
     {
-        if ((obj + i)->getnama() == nama)
+        if ((obj + i)->getnama() == target)
         {
-            std::cout << "Mahasiswa dengan nama " << nama << " ada di peringkat ke-" << i + 1 << std::endl;
+            std::cout << "Hasil:" << std::endl;
+            printf("%s ada di peringkat ke-%d", target, i + 1);
             finded = true;
             break;
         }
