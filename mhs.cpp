@@ -44,7 +44,7 @@ public:
 
 void setdatas(int, int, std::string *, Mahasiswa *);
 void sortrank(Mahasiswa *, int);
-void getdatas(Mahasiswa *, int);
+void findmhs(Mahasiswa *obj, std::string nama, int it);
 
 // main program
 int main()
@@ -54,6 +54,7 @@ int main()
                             "Struktur Data", "Bahasa Inggris",
                             "Sistem Operasi", "Pemrograman",
                             "Komputer Grafis", "Hardware/Software"};
+    std::string nama = "\0";
     int numof_matkul = (sizeof(matkul) / sizeof(std::string));
     int numof_mhs = 0;
 
@@ -73,9 +74,11 @@ int main()
     // mengurutkan mahasiswa dari ipk terbesar
     sortrank(mahasiswa, numof_mhs);
 
-    // mengeluarkan data mahasiswa
-    std::cout << "DATA RANKING MAHASISWA\n " << std::endl;
-    getdatas(mahasiswa, numof_mhs);
+    // menemukan rangking mahasiswa
+    std::cout << "Masukkan nama yang dicari: ";
+    std::cin.ignore();
+    std::getline(std::cin, nama);
+    findmhs(mahasiswa, nama, numof_mhs);
 
     // bebaskan blok memori mahasiswa
     delete[] mahasiswa;
@@ -186,14 +189,20 @@ void sortrank(Mahasiswa *obj, int it)
     }
 }
 
-void getdatas(Mahasiswa *obj, int it)
+void findmhs(Mahasiswa *obj, std::string nama, int it)
 {
+    bool finded = false;
     for (int i = 0; i < it; i++)
     {
-        std::cout << "RANKING-" << i + 1 << std::endl;
-        std::cout << "Nama : " << (obj + i)->getnama() << std::endl;
-        std::cout << "NIM  : " << (obj + i)->getnim() << std::endl;
-        std::cout << "IPK  : " << (obj + i)->getipk() << std::endl;
-        std::cout << std::endl;
+        if ((obj + i)->getnama() == nama)
+        {
+            std::cout << "Mahasiswa dengan nama " << nama << " ada di peringkat ke-" << i + 1 << std::endl;
+            finded = true;
+            break;
+        }
+    }
+    if (!finded)
+    {
+        std::cout << "Nama tidak ditemukan" << std::endl;
     }
 }
