@@ -1,14 +1,13 @@
 #include <iostream>
 #include <cstring>
 
-// class mahasiswa
-class Mahasiswa
+// struct mahasiswa
+struct Mahasiswa
 {
     std::string nama;
     std::string nim;
     float ipk;
 
-public:
     void setnama()
     {
         std::cout << "Masukkan nama mahasiswa: ";
