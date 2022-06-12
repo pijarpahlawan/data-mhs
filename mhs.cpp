@@ -1,32 +1,100 @@
 #include <iostream>
 #include <cstring>
 
-// struct mahasiswa
-struct Mahasiswa
+// node nilai
+struct Nilai
+{
+    // menyimpan data nilai
+    int data;
+    // link ke node selanjutnya
+    Nilai *next;
+};
+
+// class queue
+class Queue
+{
+    // front = node nilai pertama diinput; rear = node nilai terakhir diinput
+    Nilai *front, *rear;
+
+public:
+    // pertama kali dibuat, tidak ada node nilai di dalam queue
+    Queue()
+    {
+        front = rear = NULL;
+    }
+    // mengecek apakah queue kosong
+    bool isempty()
+    {
+        return front == NULL;
+    }
+    // memasukkan nilai
+    void enqueue(int nilai)
+    {
+        // node baru
+        Nilai *temp = new Nilai();
+        temp->data = nilai;
+        temp->next = NULL;
+
+        // apabila queue masih kosong
+        if (isempty())
+        {
+            // front dan rear akan menunjuk pada node nilai saat ini, selesai
+            front = rear = temp;
+            return;
+        }
+
+        // link rear akan menunjuk pada node nilai saat ini
+        rear->next = temp;
+        // node nilai saat ini menduduki posisi rear
+        rear = temp;
+    }
+    // mengambil nilai
+    int dequeue()
+    {
+        int nilai = front->data;
+
+        // apabila queue kosong, maka return 0
+        if (isempty())
+            return 0;
+
+        // node selanjutnya menduduki posisi front
+        Nilai *temp = front;
+        front = front->next;
+
+        // apabila setelah itu queue kosong, maka posisi rear adalah NULL
+        if (isempty())
+            rear = NULL;
+
+        delete temp;
+
+        return nilai;
+    }
+};
+
+// class mahasiswa
+class Mahasiswa
 {
     std::string nama;
     std::string nim;
     float ipk;
 
-    void setnama()
-    {
-        std::cout << "Masukkan nama mahasiswa: ";
-        std::cin.ignore();
-        getline(std::cin, nama);
-    }
-    void setnim()
-    {
-        std::cout << "Masukkan nim mahasiswa : ";
-        std::cin >> nim;
-    }
-    void calcipk(float *arr, int it)
+public:
+    void calcipk(Queue data)
     {
         float total = 0;
-        for (int i = 0; i < it; i++)
+        while (!data.isempty())
         {
-            total += *(arr + i);
+            total += data.dequeue();
         }
-        ipk = (total / (it * 100)) * 4;
+        this->ipk = (total / (8 * 100)) * 4;
+    }
+    void setnama(std::string nama)
+    {
+        this->nama = nama;
+    }
+    void setnim(std::string nim)
+    {
+        this->nim = nim;
     }
     std::string getnama()
     {
@@ -94,30 +162,35 @@ int main()
 
 void setdatas(int size_a, int size_b, std::string *arr, Mahasiswa *obj)
 {
-    float *nilai = NULL;
+    Queue nilai;
+    std::string nama;
+    std::string nim;
+    int nilai_temp;
+
     for (int i = 0; i < size_a; i++)
     {
-        // alokasi blok memori nilai matkul
-        nilai = new float[size_b];
-
-        // input nama dan nim
         std::cout << "Mahasiswa ke-" << (i + 1) << std::endl;
-        (obj + i)->setnama();
-        (obj + i)->setnim();
+        // input nama
+        std::cout << "Masukkan nama mahasiswa: ";
+        std::cin.ignore();
+        getline(std::cin, nama);
+        (obj + i)->setnama(nama);
+        // input nim
+        std::cout << "Masukkan nim mahasiswa : ";
+        std::cin >> nim;
+        (obj + i)->setnim(nim);
         std::cout << std::endl;
 
         // input nilai matkul mahasiswa
         for (int j = 0; j < size_b; j++)
         {
             std::cout << "Masukkan nilai matkul " << *(arr + j) << " : ";
-            std::cin >> *(nilai + j);
+            std::cin >> nilai_temp;
+            nilai.enqueue(nilai_temp);
         }
 
         // menghitung ipk mahasiswa
-        (obj + i)->calcipk(nilai, size_b);
-
-        // bebaskan blok memori nilai matkul yang dialokasikan
-        delete[] nilai;
+        (obj + i)->calcipk(nilai);
 
         std::cout << std::endl;
     }
